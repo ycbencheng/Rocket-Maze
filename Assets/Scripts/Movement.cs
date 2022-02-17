@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Movement : MonoBehaviour {
-  [SerializeField] float mainThrust = 1000f;
-  [SerializeField] float rotationThrust = 50f;
+  [SerializeField] float mainThrust = 750F;
+  [SerializeField] float rotationThrust = 100f;
+  [SerializeField] AudioClip mainEngine;
 
   KeyCode spaceKey;
   KeyCode aKey;
@@ -12,9 +13,12 @@ public class Movement : MonoBehaviour {
 
   Rigidbody rigidBody;
 
+  AudioSource audioSource;
+
   // Start is called before the first frame update
   void Start() {
-
+    rigidBody = GetComponent<Rigidbody>();
+    audioSource = GetComponent<AudioSource>();
   }
 
   // Update is called once per frame
@@ -23,17 +27,20 @@ public class Movement : MonoBehaviour {
     aKey = KeyCode.A;
     dKey = KeyCode.D;
 
-    rigidBody = GetComponent<Rigidbody>();
-
     ProcessThrust();
     ProcessRotation();
-    //
-    //
   }
 
   void ProcessThrust() {
     if (Input.GetKey(spaceKey)) {
       rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+
+      if (!audioSource.isPlaying) {
+        audioSource.PlayOneShot(mainEngine);
+      }
+
+    } else {
+      audioSource.Stop();
     }
   }
 
