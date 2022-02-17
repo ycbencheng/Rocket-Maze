@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour {
   [SerializeField] float mainThrust = 750F;
   [SerializeField] float rotationThrust = 100f;
   [SerializeField] AudioClip mainEngine;
+  [SerializeField] ParticleSystem mainThrusterParticles;
 
   KeyCode spaceKey;
   KeyCode aKey;
@@ -33,14 +34,22 @@ public class Movement : MonoBehaviour {
 
   void ProcessThrust() {
     if (Input.GetKey(spaceKey)) {
-      rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
-
-      if (!audioSource.isPlaying) {
-        audioSource.PlayOneShot(mainEngine);
-      }
-
+      StartThrusting();
     } else {
       audioSource.Stop();
+      mainThrusterParticles.Stop();
+    }
+  }
+
+  void StartThrusting() {
+    rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+
+    if (!audioSource.isPlaying) {
+      audioSource.PlayOneShot(mainEngine);
+    }
+
+    if (!mainThrusterParticles.isPlaying) {
+      mainThrusterParticles.Play();
     }
   }
 
